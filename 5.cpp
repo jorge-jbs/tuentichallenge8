@@ -1,10 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int size(vector<int> a, vector<string> parts) {
+int size(vector<int> & a, vector<string> & parts) {
     int sum = 0;
     for (auto i : a) {
-        sum += parts[a[i]].size();
+        sum += parts[i].size();
     }
     return sum;
 }
@@ -13,7 +13,8 @@ bool is_match(string a, int n, string b, int m) {
     int asize = a.size();
     int bsize = b.size();
     for (int i = n, j = m; i < asize && j < bsize; i++, j++) {
-        if (a[i] != b[i]) {
+        //printf("%c<->%c", a[i], b[i]);
+        if (a[i] != b[j]) {
             return false;
         }
     }
@@ -27,16 +28,20 @@ bool is_in(vector<int> xs, int y) {
     return false;
 }
 
-vector<int> orig(vector<int> a, vector<int> b, vector<string> parts) {
+bool orig(vector<int> & a, vector<int> & b, vector<string> parts) {
     int alen = size(a, parts);
     int blen = size(b, parts);
     printf("%d %d", alen, blen);
     cout << endl;
     if (alen == blen && alen != 0) {
+        /*
         a.insert(a.end(), b.begin(), b.end());
         sort(a.begin(), a.end());
         return a;
+        */
+        return true;
     } else {
+        /*
         if (alen >= blen) {
             vector<int> aux = b;
             b = a;
@@ -45,22 +50,37 @@ vector<int> orig(vector<int> a, vector<int> b, vector<string> parts) {
             blen = alen;
             alen = auxlen;
         }
-        int dif = blen - alen;
-        string last = parts[b.back()];
+        */
+        int dif = abs(blen - alen);
+        string last;
+        if (alen < blen) {
+            last = parts[b.back()];
+        } else {
+            last = parts[a.back()];
+        }
         int nparts = parts.size();
         for (int i = 0; i < nparts; i++) {
             if (!is_in(a, i) && !is_in(b, i)) {
-                a.push_back(i);
+                if (alen < blen) {
+                    a.push_back(i);
+                } else {
+                    b.push_back(i);
+                }
                 if (is_match(parts[i], 0, last, last.size() - dif)) {
-                    vector<int> o = orig(a, b, parts);
                     cout << "hola " << i << endl;
-                    if (!o.empty()) {
-                        return o;
+                    if (orig(a, b, parts)) {
+                        cout << "nos vamos" << endl;
+                        return true;
                     }
                 }
-                a.pop_back();
+                if (alen < blen) {
+                    a.pop_back();
+                } else {
+                    b.pop_back();
+                }
             }
         }
+        return false;
     }
 }
 
@@ -104,13 +124,13 @@ int main() {
     //cout << tokens[1];
     vector<int> a;
     vector<int> b;
-    b.push_back(0);
-    printf("hue");
-    for (auto i : orig(a, b, tokens)) {
+    b.push_back(4);
+    orig(a, b, tokens);
+    a.insert(a.end(), b.begin(), b.end());
+    sort(a.begin(), a.end());
+    for (auto i : a) {
         printf("%d,", i);
-        printf("hue");
     }
-    printf("hue");
     printf("\n");
     return 0;
 
