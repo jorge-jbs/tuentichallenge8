@@ -31,8 +31,8 @@ bool is_in(vector<int> xs, int y) {
 bool orig(vector<int> & a, vector<int> & b, vector<string> parts) {
     int alen = size(a, parts);
     int blen = size(b, parts);
-    printf("%d %d", alen, blen);
-    cout << endl;
+    //printf("%d %d", alen, blen);
+    //cout << endl;
     if (alen == blen && alen != 0) {
         /*
         a.insert(a.end(), b.begin(), b.end());
@@ -67,9 +67,9 @@ bool orig(vector<int> & a, vector<int> & b, vector<string> parts) {
                     b.push_back(i);
                 }
                 if (is_match(parts[i], 0, last, last.size() - dif)) {
-                    cout << "hola " << i << endl;
+                    //cout << "hola " << i << endl;
                     if (orig(a, b, parts)) {
-                        cout << "nos vamos" << endl;
+                        //cout << "nos vamos" << endl;
                         return true;
                     }
                 }
@@ -128,10 +128,12 @@ int main() {
     orig(a, b, tokens);
     a.insert(a.end(), b.begin(), b.end());
     sort(a.begin(), a.end());
-    for (auto i : a) {
-        printf("%d,", i);
+    int i;
+    for (i = 0; i < a.size() - 1; i++) {
+        printf("%d,", a[i]+1);
     }
-    printf("\n");
+    printf("%d", a[i]+1);
+    cout << endl;
     return 0;
 
 
