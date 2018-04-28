@@ -124,11 +124,18 @@ int main() {
     //cout << tokens[1];
     vector<int> a;
     vector<int> b;
-    b.push_back(4);
-    orig(a, b, tokens);
+
+    int i = 0;
+    b.push_back(i);
+    do {
+        b.pop_back();
+        b.push_back(i);
+        i++;
+    } while (!orig(a, b, tokens));
+
     a.insert(a.end(), b.begin(), b.end());
     sort(a.begin(), a.end());
-    int i;
+
     for (i = 0; i < a.size() - 1; i++) {
         printf("%d,", a[i]+1);
     }
