@@ -6,17 +6,19 @@ struct tDoor {
     unsigned int p;
 };
 
-int next(unsigned int t1, unsigned int p1, int n1, unsigned int t2, unsigned int p2) {
+unsigned int next(bool *success, unsigned int t1, unsigned int p1, int n1, unsigned int t2, unsigned int p2) {
     int a = (p1 * n1 + 1 + t2) - t1;
-    return a % p2 == 0 ? a / p2 : -1;
+    *success = a % p2 == 0;
+    return a / p2;
 }
 
-bool match(vector<tDoor> doors, int i, int n) {
+bool match(vector<tDoor> doors, int i, unsigned int n) {
     if (i >= doors.size()-1) {
         return true;
     } else {
-        n = next(doors[i].t, doors[i].p, n, doors[i+1].t, doors[i+1].p);
-        return n > -1 && match(doors, i+1, n);
+        bool success;
+        n = next(&success, doors[i].t, doors[i].p, n, doors[i+1].t, doors[i+1].p);
+        return success && match(doors, i+1, n);
     }
 }
 
@@ -48,7 +50,7 @@ int main() {
         scanf("%d", &d);
         vector<tDoor> doors;
         for (int j = 0; j < d; j++) {
-            int p, t;
+            unsigned int p, t;
             scanf("%d %d", &p, &t);
             doors.push_back({ .t = t, .p = p });
         }
@@ -62,11 +64,11 @@ int main() {
         if (never) {
             printf("Case #%d: NEVER", i+1);
         } else {
-            int n = 1;
+            unsigned int n = 1;
             while (!match(doors, 0, n)) {
                 n++;
             }
-            printf("Case #%d: %d", i+1, doors[0].p * n - doors[0].t);
+            printf("Case #%d: %u", i+1, doors[0].p * n - doors[0].t);
         }
         cout << endl;
     }
