@@ -6,13 +6,13 @@ struct tDoor {
     unsigned int p;
 };
 
-long long unsigned int next(bool *success, unsigned int t1, unsigned int p1, long long int n1, unsigned int t2, unsigned int p2) {
-    long long unsigned int a = (p1 * n1 + 1 + t2) - t1;
+__uint128_t next(bool *success, unsigned int t1, unsigned int p1, __uint128_t n1, unsigned int t2, unsigned int p2) {
+    __uint128_t a = (p1 * n1 + 1 + t2) - t1;
     *success = a % p2 == 0;
     return a / p2;
 }
 
-bool match(vector<tDoor> doors, int i, long long unsigned int n) {
+bool match(vector<tDoor> doors, int i, __uint128_t n) {
     if (i >= doors.size()-1) {
         return true;
     } else {
@@ -42,6 +42,21 @@ unsigned int gcd(unsigned int u, unsigned int v) {
     }
 }
 
+void print_uint128(__uint128_t n) {
+    if (n == 0) {
+        printf("0");
+        return;
+    }
+    char str[40] = {0};
+    char *s = str + sizeof(str) - 1;
+    while (n != 0 && s != str) {
+        --s;
+        *s = "0123456789"[n % 10];
+        n /= 10;
+    }
+    printf("%s", s);
+}
+
 int main() {
     int c;
     scanf("%d", &c);
@@ -64,11 +79,17 @@ int main() {
         if (never) {
             printf("Case #%d: NEVER", i+1);
         } else {
-            long long unsigned int n = 1;
+            __uint128_t n = 1;
             while (!match(doors, 0, n)) {
+                if (n % 10000000 == 0) {
+                    print_uint128(n);
+                    cout << endl;
+                }
                 n++;
             }
-            printf("Case #%d: %llu", i+1, doors[0].p * n - doors[0].t);
+            __uint128_t res = doors[0].p * n - doors[0].t;
+            printf("Case #%d: ", i+1);
+            print_uint128(res);
         }
         cout << endl;
     }
