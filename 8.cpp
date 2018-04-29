@@ -2,12 +2,12 @@
 using namespace std;
 
 struct tDoor {
-    int t;
-    int p;
+    unsigned int t;
+    unsigned int p;
 };
 
-int next(int t1, int p1, int n1, int t2, int p2) {
-    int a = t1 + p1 * n1 + 1 - t2;
+int next(unsigned int t1, unsigned int p1, int n1, unsigned int t2, unsigned int p2) {
+    int a = (p1 * n1 + 1 + t2) - t1;
     return a % p2 == 0 ? a / p2 : -1;
 }
 
@@ -50,7 +50,7 @@ int main() {
         for (int j = 0; j < d; j++) {
             int p, t;
             scanf("%d %d", &p, &t);
-            doors.push_back({ .t = -t, .p = p });
+            doors.push_back({ .t = t, .p = p });
         }
         bool never = false;
         for (int k = 0; k < doors.size() - 1; k++) {
@@ -66,7 +66,7 @@ int main() {
             while (!match(doors, 0, n)) {
                 n++;
             }
-            printf("Case #%d: %d", i+1, doors[0].t + doors[0].p * n);
+            printf("Case #%d: %d", i+1, doors[0].p * n - doors[0].t);
         }
         cout << endl;
     }
