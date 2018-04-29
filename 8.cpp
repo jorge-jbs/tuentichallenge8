@@ -20,6 +20,36 @@ bool match(vector<tDoor> doors, int i, int n) {
     }
 }
 
+unsigned int gcd(unsigned int u, unsigned int v) {
+    // simple cases (termination)
+    if (u == v)
+        return u;
+
+    if (u == 0)
+        return v;
+
+    if (v == 0)
+        return u;
+
+    // look for factors of 2
+    if (~u & 1) // u is even
+    {
+        if (v & 1) // v is odd
+            return gcd(u >> 1, v);
+        else // both u and v are even
+            return gcd(u >> 1, v >> 1) << 1;
+    }
+
+    if (~v & 1) // u is odd, v is even
+        return gcd(u, v >> 1);
+
+    // reduce larger argument
+    if (u > v)
+        return gcd((u - v) >> 1, v);
+
+    return gcd((v - u) >> 1, u);
+}
+
 int main() {
     int c;
     scanf("%d", &c);
@@ -32,19 +62,21 @@ int main() {
             scanf("%d %d", &p, &t);
             doors.push_back({ .t = -t, .p = p });
         }
-        bool found = false;
-        int n;
-        for (n = 0; n < 1000000; n++) {
-            //cout << "trying " << n << endl;
-            if (match(doors, 0, n)) {
-                found = true;
+        bool never = false;
+        for (int k = 0; k < doors.size() - 1; k++) {
+            if (gcd(doors[k].p, doors[k+1].p) != 1) {
+                never = true;
                 break;
             }
         }
-        if (found) {
-            printf("Case #%d: %d", i+1, doors[0].t + doors[0].p * n);
-        } else {
+        if (never) {
             printf("Case #%d: NEVER", i+1);
+        } else {
+            int n = 1;
+            while (!match(doors, 0, n)) {
+                n++;
+            }
+            printf("Case #%d: %d", i+1, doors[0].t + doors[0].p * n);
         }
         cout << endl;
     }
