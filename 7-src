@@ -1,0 +1,78 @@
+I used different source files in different languages so this file cannot be compiled.
+
+First I made a hexdump of the contents of the file provided in the image. I found a suspicious
+string of characters. Later, I found that it had a `=` in the end, so maybe it was a base64
+encoded string. It was, but it looked like garbage. I did some googling
+(well, some duckduckgoing) and found that there was a language called pikalang. It turned out it
+was exactly like brainfuck but with different syntax. Now the only thing needed was to convert the
+pikalang program to a brainfuck program,
+then to a C program, then compile and execute. But, the first time I did this it didn't work because
+a while loop didn't match with anything. It was weird that the first thing the program did
+was printing, so I tried reversing the order of the instructions. Everything works! Done.
+
+// pikalang to brainfuck transpiler, in reverse order (in cpp)
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    char s[10];
+    vector<char> out;
+    while (scanf("%s", s) != -1) {
+        if (strcmp(s, "pipi") == 0) out.push_back('>');
+        else if (strcmp(s, "pichu") == 0) out.push_back('<');
+        else if (strcmp(s, "pi") == 0) out.push_back('+');
+        else if (strcmp(s, "ka") == 0) out.push_back('-');
+        else if (strcmp(s, "pikachu") == 0) out.push_back('.');
+        else if (strcmp(s, "pikapi") == 0) out.push_back(',');
+        else if (strcmp(s, "pika") == 0) out.push_back('[');
+        else if (strcmp(s, "chu") == 0) out.push_back(']');
+        /*
+        if (strcmp(s, "pipi") == 0) printf(">");
+        else if (strcmp(s, "pichu") == 0) printf("<");
+        else if (strcmp(s, "pi") == 0) printf("+");
+        else if (strcmp(s, "ka") == 0) printf("-");
+        else if (strcmp(s, "pikachu") == 0) printf(".");
+        else if (strcmp(s, "pikapi") == 0) printf(",");
+        else if (strcmp(s, "pika") == 0) printf("[");
+        else if (strcmp(s, "chu") == 0) printf("]");
+        */
+    }
+    reverse(out.begin(), out.end());
+    for (auto c : out) {
+        printf("%c", c);
+    }
+    printf("\n");
+}
+
+// brainfuck to C transpiler (in rust)
+use std::io::stdin;
+use std::io::Read;
+
+fn main() {
+    let mut code = String::from(r#"#include <stdio.h>
+int main()
+{
+int buffer[1024] = {0};
+int *ptr = buffer;
+"#);
+
+    for c in stdin().bytes() {
+        match c.unwrap() as char {
+            '+' => code.push_str("(*ptr)++;\n"),
+            '-' => code.push_str("(*ptr)--;\n"),
+            '>' => code.push_str("ptr++;\n"),
+            '<' => code.push_str("ptr--;\n"),
+            '[' => code.push_str("while(*ptr) {\n"),
+            ']' => code.push_str("}\n"),
+            '.' => code.push_str("putchar(*ptr);\n"),
+            ',' => code.push_str("*ptr = getchar();\n"),
+            _ => (),
+        }
+    }
+
+    code.push_str(r#"
+return 0;
+}
+"#);
+    println!("{}", code);
+}
