@@ -21,33 +21,23 @@ bool match(vector<tDoor> doors, int i, int n) {
 }
 
 unsigned int gcd(unsigned int u, unsigned int v) {
-    // simple cases (termination)
-    if (u == v)
-        return u;
-
-    if (u == 0)
-        return v;
-
-    if (v == 0)
-        return u;
-
-    // look for factors of 2
-    if (~u & 1) // u is even
-    {
-        if (v & 1) // v is odd
+    if (u == v) return u;
+    if (u == 0) return v;
+    if (v == 0) return u;
+    if (~u & 1) {
+        if (v & 1) {
             return gcd(u >> 1, v);
-        else // both u and v are even
+        } else {
             return gcd(u >> 1, v >> 1) << 1;
+        }
     }
-
-    if (~v & 1) // u is odd, v is even
+    if (~v & 1) {
         return gcd(u, v >> 1);
-
-    // reduce larger argument
-    if (u > v)
+    } else if (u > v) {
         return gcd((u - v) >> 1, v);
-
-    return gcd((v - u) >> 1, u);
+    } else {
+        return gcd((v - u) >> 1, u);
+    }
 }
 
 int main() {
