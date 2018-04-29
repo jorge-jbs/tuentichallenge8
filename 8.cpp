@@ -5,24 +5,19 @@ typedef long long unsigned int llui;
 typedef unsigned int uint;
 
 struct tDoor {
-    unsigned int t;
-    unsigned int p;
+    llui t;
+    llui p;
 };
 
-llui next(bool *success, uint t1, uint p1, llui n1, uint t2, uint p2) {
-    __uint128_t a = (p1 * n1 + 1 + t2) - t1;
-    *success = a % p2 == 0;
-    return a / p2;
-}
-
-bool match(vector<tDoor> & doors, int i, llui n) {
+bool match(vector<tDoor> & doors, int i, const llui & n) {
     if (i >= doors.size()-1) {
         return true;
     } else {
-        bool success;
-        n = next(&success, doors[i].t, doors[i].p, n, doors[i+1].t, doors[i+1].p);
-        if (success) {
-            return match(doors, i+1, n);
+        tDoor d1 = doors[i];
+        tDoor d2 = doors[i+1];
+        llui a = d1.p * n + 1 + d2.t - d1.t;
+        if (a % d2.p == 0) {
+            return match(doors, i+1, a / d2.p);
         } else {
             return false;
         }
@@ -88,15 +83,10 @@ int main() {
         } else {
             llui n = 1;
             while (!match(doors, 0, n)) {
-                if (n % 100000000 == 0) {
-                    print_uint128(n);
-                    cout << endl;
-                }
+                //if (n % 100000000 == 0) cout << n << endl;
                 n++;
             }
-            llui res = doors[0].p * n - doors[0].t;
-            printf("Case #%d: ", i+1);
-            print_uint128(res);
+            printf("Case #%d: %llu", i+1, doors[0].p * n - doors[0].t);
         }
         cout << endl;
     }
