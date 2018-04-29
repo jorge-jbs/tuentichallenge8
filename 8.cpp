@@ -6,13 +6,13 @@ struct tDoor {
     unsigned int p;
 };
 
-unsigned int next(bool *success, unsigned int t1, unsigned int p1, int n1, unsigned int t2, unsigned int p2) {
-    int a = (p1 * n1 + 1 + t2) - t1;
+long long unsigned int next(bool *success, unsigned int t1, unsigned int p1, long long int n1, unsigned int t2, unsigned int p2) {
+    long long unsigned int a = (p1 * n1 + 1 + t2) - t1;
     *success = a % p2 == 0;
     return a / p2;
 }
 
-bool match(vector<tDoor> doors, int i, unsigned int n) {
+bool match(vector<tDoor> doors, int i, long long unsigned int n) {
     if (i >= doors.size()-1) {
         return true;
     } else {
@@ -64,11 +64,11 @@ int main() {
         if (never) {
             printf("Case #%d: NEVER", i+1);
         } else {
-            unsigned int n = 1;
+            long long unsigned int n = 1;
             while (!match(doors, 0, n)) {
                 n++;
             }
-            printf("Case #%d: %u", i+1, doors[0].p * n - doors[0].t);
+            printf("Case #%d: %llu", i+1, doors[0].p * n - doors[0].t);
         }
         cout << endl;
     }
