@@ -21,20 +21,27 @@ bool operator==(tSchedule a, tSchedule b) {
     return a.press == b.press && a.release == b.release;
 }
 
-int best_score(vector<pair<tSchedule, int> > blocks, int last_block, int points) {
-    int best = points;
+int score_memo[10000];
+bool score_visited[10000] = { false };
+
+int best_score(vector<pair<tSchedule, int> > blocks, int last_block) {
+    if (score_visited[last_block]) return score_memo[last_block];
+    int best = 0;
     for (int i = last_block+1; i < blocks.size(); i++) {
         if (blocks[last_block].first.release < blocks[i].first.press) {
-            best = max(best, best_score(blocks, i, blocks[i].second + points));
+            best = max(best, blocks[i].second + best_score(blocks, i));
         }
     }
+    score_memo[last_block] = best;
+    score_visited[last_block] = true;
     return best;
 }
 
 int best_best_score(vector<pair<tSchedule, int> > blocks) {
     int score = 0;
+    memset(score_visited, false, sizeof(score_visited));
     for (int i = 0; i < blocks.size(); i++) {
-        score = max(score, best_score(blocks, i, blocks[i].second));
+        score = max(score, blocks[i].second + best_score(blocks, i));
     }
     return score;
 }
