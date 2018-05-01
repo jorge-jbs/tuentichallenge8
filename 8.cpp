@@ -71,6 +71,7 @@ int main() {
             scanf("%d %d", &p, &t);
             doors.push_back({ .t = t, .p = p });
         }
+        if (i < 90) continue;
         bool never = false;
         for (int k = 0; k < doors.size() - 1; k++) {
             if (gcd(doors[k].p, doors[k+1].p) != 1) {
@@ -83,7 +84,7 @@ int main() {
         } else {
             llui n = 1;
             while (!match(doors, 0, n)) {
-                //if (n % 100000000 == 0) cout << n << endl;
+                if (n % 100000000 == 0) cout << n << endl;
                 n++;
             }
             printf("Case #%d: %llu", i+1, doors[0].p * n - doors[0].t);
