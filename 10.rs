@@ -86,9 +86,9 @@ impl Graph {
     }
 }
 
-fn arrangements(p: i32, argm_memo: &mut Vec<HashSet<Graph>>, argm_vis: &mut [bool; 50]) -> HashSet<Graph> {
-    if p % 2 == 1 { return HashSet::new() }
-    if argm_vis[(p/2) as usize] { return argm_memo[(p/2) as usize].clone() }
+fn arrangements<'a>(p: i32, argm_memo: &'a mut Vec<HashSet<Graph>>, argm_vis: &mut [bool; 50]) -> &'a HashSet<Graph> {
+    if p % 2 == 1 || p <= 0 { return &argm_memo[0] }
+    if argm_vis[(p/2) as usize] { print!("."); return &argm_memo[(p/2) as usize] }
     let mut graphs: HashSet<Graph> = HashSet::new();
     if p == 4 {
         {
@@ -105,8 +105,8 @@ fn arrangements(p: i32, argm_memo: &mut Vec<HashSet<Graph>>, argm_vis: &mut [boo
         }
     } else {
         for x in 0..p/2 {
-            for mut g in arrangements(p - 2, argm_memo, argm_vis) {
-                g = Graph(g.0.iter().map(|e| {
+            for g in arrangements(p - 2, argm_memo, argm_vis) {
+                let mut g = Graph(g.0.iter().map(|e| {
                     Edge {
                         a: (e.a + 2 + x) % p,
                         b: (e.b + 2 + x) % p,
@@ -118,12 +118,11 @@ fn arrangements(p: i32, argm_memo: &mut Vec<HashSet<Graph>>, argm_vis: &mut [boo
         }
     }
     argm_vis[(p/2) as usize] = true;
-    argm_memo[(p/2) as usize] = graphs.clone();
-    graphs
+    argm_memo[(p/2) as usize] = graphs;
+    &argm_memo[(p/2) as usize]
 }
 
 fn main() {
-    println!("hola");
     let mut argm_memo: Vec<HashSet<Graph>> = vec![HashSet::new(); 50];
     let mut argm_vis: [bool; 50] = [false; 50];
 
@@ -136,6 +135,7 @@ fn main() {
         println!("}}");
     }
     */
+    println!("hola");
     for p in 0..13 {
         println!("{}: {}", p*2, arrangements(p*2, &mut argm_memo, &mut argm_vis).len());
     }
